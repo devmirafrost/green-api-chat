@@ -1,10 +1,14 @@
-import { useAuth } from '@/hooks/useAuth';
 import { useChat } from '@/hooks/useChat';
 import { ChatList } from './ChatList';
 import { ChatWindow } from './ChatWindow';
+import type { GreenApiCredentials } from '@/types';
 
-export const ChatPage = () => {
-  const { credentials, logout } = useAuth();
+interface ChatPageProps {
+  credentials: GreenApiCredentials;
+  onLogout: () => void;
+}
+
+export const ChatPage = ({ credentials, onLogout }: ChatPageProps) => {
   const {
     chats,
     messages,
@@ -12,7 +16,7 @@ export const ChatPage = () => {
     setActiveChatId,
     createChat,
     sendMessage,
-  } = useChat(credentials!);
+  } = useChat(credentials);
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -26,7 +30,7 @@ export const ChatPage = () => {
         }}
       >
         <strong>GREEN-API Chat</strong>
-        <button onClick={logout} style={{ padding: '6px 12px' }}>
+        <button onClick={onLogout} style={{ padding: '6px 12px' }}>
           Выйти
         </button>
       </header>

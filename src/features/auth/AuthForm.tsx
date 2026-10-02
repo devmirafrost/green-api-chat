@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import type { GreenApiCredentials } from '../../types';
+import { DEFAULT_CREDENTIALS } from '@/constants';
+import type { GreenApiCredentials } from '@/types';
 
 interface AuthFormProps {
   onSubmit: (creds: GreenApiCredentials) => void;
 }
 
 export const AuthForm = ({ onSubmit }: AuthFormProps) => {
-  const [idInstance, setIdInstance] = useState('');
-  const [apiTokenInstance, setApiTokenInstance] = useState('');
+  const [idInstance, setIdInstance] = useState(DEFAULT_CREDENTIALS.idInstance);
+  const [apiTokenInstance, setApiTokenInstance] = useState(
+    DEFAULT_CREDENTIALS.apiTokenInstance
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +28,7 @@ export const AuthForm = ({ onSubmit }: AuthFormProps) => {
             type="text"
             value={idInstance}
             onChange={(e) => setIdInstance(e.target.value)}
-            placeholder="Введите"
+            placeholder="1101000000"
             style={{ width: '100%', padding: 8 }}
           />
         </div>
@@ -35,7 +38,7 @@ export const AuthForm = ({ onSubmit }: AuthFormProps) => {
             type="text"
             value={apiTokenInstance}
             onChange={(e) => setApiTokenInstance(e.target.value)}
-            placeholder="Ваш токен"
+            placeholder="ваш токен"
             style={{ width: '100%', padding: 8 }}
           />
         </div>
