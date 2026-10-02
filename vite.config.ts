@@ -9,4 +9,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://3100.api.green-api.com',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api/, ''),
+      },
+    },
+  },
 });

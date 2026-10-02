@@ -4,18 +4,21 @@ import {
   sendMessage as apiSendMessage,
   receiveNotification,
   deleteNotification,
-} from '../api/greenApi';
-
-const POLL_INTERVAL = 3000;
+  setSettings,
+} from '@/api/greenApi';
+import { POLL_INTERVAL } from '@/constants';
 
 export const useChat = (creds: GreenApiCredentials) => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const credsRef = useRef(creds);
   credsRef.current = creds;
+
+  const settingsApplied = useRef(false);
 
   const createChat = useCallback((phone: string) => {
     const cleanPhone = phone.replace(/\D/g, '');
@@ -56,6 +59,7 @@ export const useChat = (creds: GreenApiCredentials) => {
       }));
     } catch (err) {
       console.error('Send error:', err);
+      setError('Не удалось отправить сообщение');
     }
   }, [activeChatId]);
 
@@ -63,66 +67,82 @@ export const useChat = (creds: GreenApiCredentials) => {
     if (!isPolling) return;
 
     let cancelled = false;
+    let timeoutId: number;
 
-    const poll = async () => {
-      if (cancelled) return;
-
-      try {
-        const notification = await receiveNotification(credsRef.current);
-
-        if (notification && !cancelled) {
-          const { body, receiptId } = notification;
-
-          if (
-            body.typeWebhook === 'incomingMessageReceived' &&
-            body.messageData?.typeMessage === 'textMessage' &&
-            body.senderData?.chatId &&
-            body.messageData.textMessageData?.textMessage
-          ) {
-            const chatId = body.senderData.chatId;
-            const text = body.messageData.textMessageData.textMessage;
-
-            setChats((prev) => {
-              if (prev.some((c) => c.id === chatId)) return prev;
-              return [
-                ...prev,
-                {
-                  id: chatId,
-                  name: body.senderData?.senderName || chatId.split('@')[0],
-                },
-              ];
-            });
-
-            setMessages((prev) => ({
-              ...prev,
-              [chatId]: [
-                ...(prev[chatId] || []),
-                {
-                  id: body.idMessage || `in-${receiptId}`,
-                  chatId,
-                  text,
-                  timestamp: (body.timestamp || Date.now() / 1000) * 1000,
-                  isOutgoing: false,
-                },
-              ],
-            }));
-          }
-
-          await deleteNotification(credsRef.current, receiptId);
+    const start = async () => {
+      if (!settingsApplied.current) {
+        try {
+          await setSettings(credsRef.current);
+          settingsApplied.current = true;
+        } catch (err) {
+          console.error('SetSettings error:', err);
+          setError('Ошибка настройки инстанса');
         }
-      } catch (err) {
-        console.error('Poll error:', err);
       }
 
-      if (!cancelled) {
-        setTimeout(poll, POLL_INTERVAL);
-      }
+      const poll = async () => {
+        if (cancelled) return;
+
+        try {
+          const notification = await receiveNotification(credsRef.current);
+
+          if (notification && !cancelled) {
+            const { body, receiptId } = notification;
+
+            if (
+              body.typeWebhook === 'incomingMessageReceived' &&
+              body.messageData?.typeMessage === 'textMessage' &&
+              body.senderData?.chatId &&
+              body.messageData.textMessageData?.textMessage
+            ) {
+              const chatId = body.senderData.chatId;
+              const text = body.messageData.textMessageData.textMessage;
+
+              setChats((prev) => {
+                if (prev.some((c) => c.id === chatId)) return prev;
+                return [
+                  ...prev,
+                  {
+                    id: chatId,
+                    name: body.senderData?.senderName || chatId.split('@')[0],
+                  },
+                ];
+              });
+
+              setMessages((prev) => ({
+                ...prev,
+                [chatId]: [
+                  ...(prev[chatId] || []),
+                  {
+                    id: body.idMessage || `in-${receiptId}`,
+                    chatId,
+                    text,
+                    timestamp: (body.timestamp || Date.now() / 1000) * 1000,
+                    isOutgoing: false,
+                  },
+                ],
+              }));
+            }
+
+            await deleteNotification(credsRef.current, receiptId);
+          }
+        } catch (err) {
+          console.error('Poll error:', err);
+        }
+
+        if (!cancelled) {
+          timeoutId = window.setTimeout(poll, POLL_INTERVAL);
+        }
+      };
+
+      poll();
     };
 
-    poll();
+    start();
 
     return () => {
       cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [isPolling]);
 
@@ -135,5 +155,6 @@ export const useChat = (creds: GreenApiCredentials) => {
     sendMessage,
     isPolling,
     setIsPolling,
+    error,
   };
 };
