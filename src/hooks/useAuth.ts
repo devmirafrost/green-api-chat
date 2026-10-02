@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { GreenApiCredentials } from '../types';
+import type { GreenApiCredentials } from '@/types';
 
 const STORAGE_KEY = 'green-api-credentials';
 
