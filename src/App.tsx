@@ -1,8 +1,9 @@
-import { useAuth } from './hooks/useAuth';
-import { AuthForm } from './features/auth/AuthForm';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthForm } from '@/features/auth/AuthForm';
+import { ChatPage } from '@/features/chat/ChatPage';
 
 function App() {
-  const { credentials, isLoading, login, logout } = useAuth();
+  const { credentials, isLoading, login } = useAuth();
 
   if (isLoading) {
     return <div style={{ padding: 24 }}>Загрузка...</div>;
@@ -12,13 +13,7 @@ function App() {
     return <AuthForm onSubmit={login} />;
   }
 
-  return (
-    <div style={{ padding: 24 }}>
-      <h1>Добро пожаловать!</h1>
-      <p>idInstance: {credentials.idInstance}</p>
-      <button onClick={logout}>Выйти</button>
-    </div>
-  );
+  return <ChatPage />;
 }
 
 export default App;
