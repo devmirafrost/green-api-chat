@@ -1,5 +1,6 @@
-import { useAuth } from './hooks/useAuth';
-import { AuthForm } from './features/auth/AuthForm';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthForm } from '@/features/auth/AuthForm';
+import { ChatPage } from '@/features/chat/ChatPage';
 
 function App() {
   const { credentials, isLoading, login, logout } = useAuth();
@@ -12,13 +13,7 @@ function App() {
     return <AuthForm onSubmit={login} />;
   }
 
-  return (
-    <div style={{ padding: 24 }}>
-      <h1>Добро пожаловать!</h1>
-      <p>idInstance: {credentials.idInstance}</p>
-      <button onClick={logout}>Выйти</button>
-    </div>
-  );
+  return <ChatPage credentials={credentials} onLogout={logout} />;
 }
 
 export default App;

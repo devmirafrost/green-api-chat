@@ -1,13 +1,17 @@
 import { useState } from 'react';
-import type { GreenApiCredentials } from '../../types';
+import { DEFAULT_CREDENTIALS } from '@/constants';
+import { MaxLogo } from '@/components/MaxLogo';
+import type { GreenApiCredentials } from '@/types';
 
 interface AuthFormProps {
   onSubmit: (creds: GreenApiCredentials) => void;
 }
 
 export const AuthForm = ({ onSubmit }: AuthFormProps) => {
-  const [idInstance, setIdInstance] = useState('');
-  const [apiTokenInstance, setApiTokenInstance] = useState('');
+  const [idInstance, setIdInstance] = useState(DEFAULT_CREDENTIALS.idInstance);
+  const [apiTokenInstance, setApiTokenInstance] = useState(
+    DEFAULT_CREDENTIALS.apiTokenInstance
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,30 +20,37 @@ export const AuthForm = ({ onSubmit }: AuthFormProps) => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '100px auto', padding: 24 }}>
-      <h1>Вход в GREEN-API Chat</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <label>idInstance</label>
+    <div className="auth-page">
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <MaxLogo size={80} />
+        <h1 className="auth-title">Вход в чат</h1>
+        <p className="auth-subtitle">
+          Введите данные из личного кабинета GREEN-API
+        </p>
+
+        <label className="auth-label">
+          idInstance
           <input
+            className="auth-input"
             type="text"
             value={idInstance}
             onChange={(e) => setIdInstance(e.target.value)}
-            placeholder="Введите"
-            style={{ width: '100%', padding: 8 }}
+            placeholder="1101000000"
           />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>apiTokenInstance</label>
+        </label>
+
+        <label className="auth-label">
+          apiTokenInstance
           <input
+            className="auth-input"
             type="text"
             value={apiTokenInstance}
             onChange={(e) => setApiTokenInstance(e.target.value)}
-            placeholder="Ваш токен"
-            style={{ width: '100%', padding: 8 }}
+            placeholder="ваш токен"
           />
-        </div>
-        <button type="submit" style={{ padding: '10px 20px' }}>
+        </label>
+
+        <button className="auth-button" type="submit">
           Войти
         </button>
       </form>
