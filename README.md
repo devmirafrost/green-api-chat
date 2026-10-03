@@ -1,24 +1,119 @@
 # GREEN-API Chat
 
-Тестовое задание: пользовательский интерфейс для отправки и получения сообщений в мессенджере MAX через GREEN-API.
+Тестовое задание: пользовательский интерфейс для отправки и получения сообщений через GREEN-API, стилизованный под мессенджер **MAX**.
 
 ## 🛠️ Стек
 
-- React 18 + TypeScript
-- Vite
-- ESLint + Prettier
-- GitHub Actions (CI)
+- **React 18** + **TypeScript**
+- **Vite**
+- **ESLint** + **Prettier**
+- **GitHub Actions** (CI)
 
-## 🚀 Локальный запуск
+## 🚀 Быстрый старт
+
+### 1. Клонирование
 
 ```bash
+git clone https://github.com/devmirafrost/green-api-chat.git
+cd green-api-chat
+2. Установка зависимостей
+bash
 npm install
-npm run dev
-```
-## Коммит и пуш
+3. Настройка переменных окружения
+Для работы приложения нужны учётные данные из личного кабинета GREEN-API. Они хранятся в файле .env, который не попадает в репозиторий (добавлен в .gitignore).
 
-```bash
-git add .
-git commit -m "chore: add project structure and README"
-git push
-```
+Создай файл .env в корне проекта и заполни его по образцу:
+
+env
+VITE_API_URL=https://3100.api.green-api.com
+VITE_ID_INSTANCE=твой_idInstance
+VITE_API_TOKEN=твой_apiTokenInstance
+Как получить значения:
+
+Зарегистрируйся на console.green-api.com
+
+Создай инстанс
+
+Скопируй idInstance и apiTokenInstance из настроек инстанса
+
+В поле VITE_API_URL укажи адрес API своего инстанса (он указан в ЛК, например https://3100.api.green-api.com)
+
+Готовый шаблон лежит в .env.example — можно скопировать его и переименовать в .env:
+
+bash
+cp .env.example .env
+⚠️ Важно: никогда не коммить .env в репозиторий. Если файл случайно попал в git — удали его из истории (git rm --cached .env) и смени токен в ЛК.
+
+4. Запуск
+bash
+npm run dev
+Открой http://localhost:5173.
+
+При первом запуске форма авторизации уже заполнена значениями из .env — просто нажми «Войти».
+
+📁 Структура проекта
+text
+src/
+├── api/          # запросы к GREEN-API
+├── assets/       # фоновое изображение MAX
+├── components/   # общие компоненты (MaxLogo)
+├── constants/    # константы (API_URL, POLL_INTERVAL)
+├── features/
+│   ├── auth/     # форма авторизации
+│   └── chat/     # список чатов, окно переписки
+├── hooks/        # useAuth, useChat
+├── types/        # TypeScript-типы
+├── App.tsx
+├── main.tsx
+└── index.css     # глобальные стили + палитра MAX
+📋 Что реализовано
+☑ Авторизация — ввод idInstance + apiTokenInstance, сохранение в localStorage
+☑ Создание чата по номеру телефона
+☑ Отправка сообщений через sendMessage
+☑ Получение сообщений через receiveNotification + deleteNotification (polling каждые 5 секунд)
+☑ Автоматическая настройка инстанса через setSettings при старте
+☑ Обработка ошибок — CORS-прокси Vite, обработка 429 / 466
+☑ UI в стиле MAX — тёмная палитра, шрифт Roboto, анимированный логотип, градиенты
+🎨 Дизайн
+Интерфейс стилизован под web.max.ru:
+
+Тёмный фон #17181c + бесшовная фоновая плитка
+
+Шрифт Roboto
+
+Градиент #7b61ff → #4b9bff для акцентов и логотипа
+
+Пузыри сообщений #3a3e59
+
+Тонкие разделители #1f2023
+
+Полупрозрачный сайдбар с backdrop-filter: blur(20px)
+
+⚙️ Скрипты
+bash
+npm run dev       # запуск dev-сервера
+npm run build     # сборка в dist/
+npm run preview   # предпросмотр сборки
+npm run lint      # проверка ESLint
+🐳 CI/CD
+При каждом пуше в main / develop и в pull request'ах запускается GitHub Actions:
+
+npm ci — установка зависимостей
+
+npm run lint — проверка кода
+
+npm run build — сборка проекта
+
+Конфиг: .github/workflows/ci.yml
+
+⚠️ Известные ограничения
+При тестировании упёрся в лимиты бесплатного тарифа GREEN-API «Разработчик»:
+
+Только 3 чата в месяц
+
+Только 10 вызовов sendMessage в месяц
+
+Ошибка 466 (Monthly quota has been exceeded) — это ограничение платформы, а не баг приложения. Интеграция работает корректно: запросы уходят на сервер, ответы обрабатываются. Для полноценного тестирования нужен тариф Business или ожидание сброса лимитов 1-го числа следующего месяца.
+
+📌 Версия
+v1.0.0 — первый релиз с полной стилизацией под MAX
