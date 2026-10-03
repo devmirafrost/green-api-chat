@@ -14,38 +14,66 @@ export const ChatList = ({ chats, activeChatId, onSelect, onCreate }: ChatListPr
   };
 
   return (
-    <aside
-      style={{
-        width: 280,
-        borderRight: '1px solid #ddd',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <div style={{ padding: 12, borderBottom: '1px solid #ddd' }}>
-        <button onClick={handleCreate} style={{ width: '100%', padding: 10 }}>
-          + Новый чат
-        </button>
-      </div>
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        {chats.length === 0 && (
-          <p style={{ padding: 12, color: '#888' }}>Нет чатов. Создайте первый.</p>
-        )}
-        {chats.map((chat) => (
-          <div
-            key={chat.id}
-            onClick={() => onSelect(chat.id)}
-            style={{
-              padding: 12,
-              cursor: 'pointer',
-              background: chat.id === activeChatId ? '#e3f2fd' : 'transparent',
-              borderBottom: '1px solid #eee',
-            }}
-          >
-            <strong>{chat.name}</strong>
+    <div className="scrollListContent">
+      {chats.length === 0 && (
+        <div className="chatList-empty">Нет чатов. Создайте первый.</div>
+      )}
+
+      {chats.map((chat) => (
+        <div
+          key={chat.id}
+          className={`item ${chat.id === activeChatId ? 'item--selected' : ''}`}
+          onClick={() => onSelect(chat.id)}
+        >
+          <div className="wrapper wrapper--withActions">
+            <button className="cell" type="button">
+              <div className="avatarComposition">
+                <div className="avatarBadgeWrapper">
+                  <div className="avatarStoryRingWrapper">
+                    <div className="avatarStoryRingMask">
+                      <div className="avatarImage">
+                        {chat.name[0].toUpperCase()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <h3 className="title">
+                <span className="name">
+                  <span className="text">{chat.name}</span>
+                </span>
+              </h3>
+
+              <span className="preview">Нажмите, чтобы открыть</span>
+
+              <div className="meta">
+                <span className="time">
+                  {new Date().toLocaleDateString('ru-RU', {
+                    day: 'numeric',
+                    month: 'short',
+                  })}
+                </span>
+              </div>
+            </button>
+
+            <div className="actions">
+              <button
+                className="menuButton"
+                type="button"
+                aria-label="Еще"
+                onClick={(e) => e.stopPropagation()}
+              >
+                ⋯
+              </button>
+            </div>
           </div>
-        ))}
-      </div>
-    </aside>
+        </div>
+      ))}
+
+      <button className="chatList-create" onClick={handleCreate}>
+        + Новый чат
+      </button>
+    </div>
   );
 };

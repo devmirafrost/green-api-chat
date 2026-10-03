@@ -18,49 +18,41 @@ export const ChatPage = ({ credentials, onLogout }: ChatPageProps) => {
     sendMessage,
   } = useChat(credentials);
 
-  return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <header
-        style={{
-          padding: 12,
-          borderBottom: '1px solid #ddd',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <strong>GREEN-API Chat</strong>
-        <button onClick={onLogout} style={{ padding: '6px 12px' }}>
-          Выйти
-        </button>
-      </header>
+  const activeChat = chats.find((c) => c.id === activeChatId);
 
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+  return (
+    <div className="app">
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <div className="sidebar-logo">MAX</div>
+          <button className="sidebar-logout" onClick={onLogout}>
+            Выйти
+          </button>
+        </div>
         <ChatList
           chats={chats}
           activeChatId={activeChatId}
           onSelect={setActiveChatId}
           onCreate={createChat}
         />
-        {activeChatId ? (
-          <ChatWindow
-            messages={messages[activeChatId] || []}
-            onSend={sendMessage}
-          />
+      </aside>
+
+      <main className="main">
+        {activeChatId && activeChat ? (
+          <>
+            <header className="main-header">
+              <div className="main-avatar">{activeChat.name[0]}</div>
+              <div className="main-name">{activeChat.name}</div>
+            </header>
+            <ChatWindow
+              messages={messages[activeChatId] || []}
+              onSend={sendMessage}
+            />
+          </>
         ) : (
-          <div
-            style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#888',
-            }}
-          >
-            Выберите чат или создайте новый
-          </div>
+          <div className="main-empty">Выберите чат или создайте новый</div>
         )}
-      </div>
+      </main>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DEFAULT_CREDENTIALS } from '@/constants';
+import { MaxLogo } from '@/components/MaxLogo';
 import type { GreenApiCredentials } from '@/types';
 
 interface AuthFormProps {
@@ -19,30 +20,37 @@ export const AuthForm = ({ onSubmit }: AuthFormProps) => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '100px auto', padding: 24 }}>
-      <h1>Вход в GREEN-API Chat</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <label>idInstance</label>
+    <div className="auth-page">
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <MaxLogo size={80} />
+        <h1 className="auth-title">Вход в чат</h1>
+        <p className="auth-subtitle">
+          Введите данные из личного кабинета GREEN-API
+        </p>
+
+        <label className="auth-label">
+          idInstance
           <input
+            className="auth-input"
             type="text"
             value={idInstance}
             onChange={(e) => setIdInstance(e.target.value)}
             placeholder="1101000000"
-            style={{ width: '100%', padding: 8 }}
           />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>apiTokenInstance</label>
+        </label>
+
+        <label className="auth-label">
+          apiTokenInstance
           <input
+            className="auth-input"
             type="text"
             value={apiTokenInstance}
             onChange={(e) => setApiTokenInstance(e.target.value)}
             placeholder="ваш токен"
-            style={{ width: '100%', padding: 8 }}
           />
-        </div>
-        <button type="submit" style={{ padding: '10px 20px' }}>
+        </label>
+
+        <button className="auth-button" type="submit">
           Войти
         </button>
       </form>

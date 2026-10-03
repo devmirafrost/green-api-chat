@@ -22,55 +22,32 @@ export const ChatWindow = ({ messages, onSend }: ChatWindowProps) => {
   };
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ flex: 1, overflowY: 'auto', padding: 16, background: '#f9f9f9' }}>
+    <div className="chat-window">
+      <div className="chat-messages">
         {messages.length === 0 && (
-          <p style={{ color: '#888', textAlign: 'center' }}>Нет сообщений</p>
+          <div className="chat-messages-empty">Нет сообщений</div>
         )}
         {messages.map((m) => (
           <div
             key={m.id}
-            style={{
-              display: 'flex',
-              justifyContent: m.isOutgoing ? 'flex-end' : 'flex-start',
-              marginBottom: 8,
-            }}
+            className={`message-row ${m.isOutgoing ? 'outgoing' : 'incoming'}`}
           >
-            <div
-              style={{
-                maxWidth: '70%',
-                padding: '8px 12px',
-                borderRadius: 12,
-                background: m.isOutgoing ? '#007bff' : 'white',
-                color: m.isOutgoing ? 'white' : 'black',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-              }}
-            >
-              {m.text}
-            </div>
+            <div className="message-bubble">{m.text}</div>
           </div>
         ))}
         <div ref={bottomRef} />
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: 'flex',
-          padding: 12,
-          borderTop: '1px solid #ddd',
-          gap: 8,
-        }}
-      >
+      <form className="chat-input-form" onSubmit={handleSubmit}>
         <input
+          className="chat-input"
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Введите сообщение..."
-          style={{ flex: 1, padding: 10 }}
         />
-        <button type="submit" style={{ padding: '10px 20px' }}>
-          Отправить
+        <button className="chat-send-button" type="submit">
+          𖤂
         </button>
       </form>
     </div>
