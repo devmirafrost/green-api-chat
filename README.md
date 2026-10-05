@@ -114,3 +114,16 @@ npm run lint      # проверка ESLint
 
 📌 Версия
 v1.0.0 — первый релиз с полной стилизацией под MAX
+
+## 🌐 Демо
+
+**Основная ссылка:**
+👉 https://green-api-chat-git-main-moisgames-projects.vercel.app
+
+**Запасные ссылки (если основная не открывается):**
+- https://green-api-chat-h6w0iwduj-moisgames-projects.vercel.app
+- https://green-api-chat-mu.vercel.app
+
+> ⚠️ Если одна из ссылок не открывается с ошибкой `ERR_CONNECTION_RESET` или не грузится — **попробуйте следующую**. Все три ведут на один и тот же production-деплой из ветки `main`. У некоторых провайдеров отдельные Vercel-домены могут быть временно недоступны, поэтому рабочим будет как минимум один из них.
+
+**Репозиторий:** https://github.com/devmirafrost/green-api-chat
